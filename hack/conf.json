@@ -1,0 +1,15 @@
+{
+  "version": "0.1",
+  "plugins": [
+    {
+      "type": "hook",
+      "conf": {
+        "MatchAll": false,
+        "LabelSelectors": [{"matchExpressions": [{"key": "app", "operator": "NotIn", "values": ["nri-server"]}]}],
+        "States": ["create", "delete"],
+        "Address": "/tmp/nri-server.sock",
+        "URI": "http://unix/nri-server.sock/"
+      }
+    }
+  ]
+}
