@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nri-demo
+spec:
+  selector:
+    matchLabels:
+      app: nri-server
+  template:
+    metadata:
+      labels:
+        app: nri-server
+    spec:
+      hostNetwork: true
+      initContainers:
+        - name: initializer
+          image: payall4u/nri-hook:latest
+          imagePullPolicy: Always
+          command: [ "/app/init.sh" ]
+          volumeMounts:
+            - name: host-etc
+              mountPath: /host/etc
+            - name: host-opt
+              mountPath: /host/opt
+      containers:
+        - image: payall4u/nri-hook:latest
+          imagePullPolicy: Always
+          command: ["/app/server"]
+          name: server
+          volumeMounts:
+            - name: host-tmp
+              mountPath: /host/tmp
+      volumes:
+        - name: host-etc
+          hostPath:
+            type: Directory
+            path: /etc
+        - name: host-opt
+          hostPath:
+            type: Directory
+            path: /opt
+        - name: host-tmp
+          hostPath:
+            type: Directory
+            path: /tmp
